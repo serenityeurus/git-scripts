@@ -54,7 +54,8 @@ success_repos=()
 # ------------------------------------------------------------------
 for dir in "$target_dir"/*; do
     # Only consider entries that are directories and contain a .git folder
-    if [[ -d "$dir" && -d "$dir/.git" ]]; then
+    # (skip SafetyShare by request)
+    if [[ -d "$dir" && -d "$dir/.git" && "$(basename "$dir")" != "SafetyShare" ]]; then
         echo "--------------------------------------------------"
         echo "Processing repository: $dir"
         pushd "$dir" > /dev/null
@@ -86,7 +87,7 @@ for dir in "$target_dir"/*; do
         # --------------------------------------------------------------
         # Pull the latest changes
         # --------------------------------------------------------------
-        local repo_status=""
+        repo_status=""
         if git fetch --all --prune; then
             if git reset --hard "origin/$default_branch"; then
                 echo "✅  $dir updated to latest commit on '$default_branch'"
